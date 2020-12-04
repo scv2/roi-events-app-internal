@@ -49,16 +49,16 @@ pipeline {
             steps {
                 echo "build id = ${env.BUILD_ID}"
                 echo 'Tests passed on to build Docker container'
-                sh "gcloud builds submit -t gcr.io/roidecdtc-202/internal-image:v2.${env.BUILD_ID} ."
+                sh "gcloud builds submit -t gcr.io/roidecdtc-202/internal-image-jenkins:v2.${env.BUILD_ID} ."
             }
         }        
          stage('Stage 5') {
             steps {
                 echo 'Get cluster credentials'
-                sh 'gcloud container clusters get-credentials events-feed-cluster--zone us-central1-a --project roidecdtc-202'
+                sh 'gcloud container clusters get-credentials events-feed-cluster --zone us-central1-a --project roidecdtc-202'
                 echo 'Update the image'
-                echo "gcr.io/roidecdtc-202/internal-image:2.${env.BUILD_ID}"
-                sh "kubectl set image deployment/events-internal-deployment events-internal=gcr.io/roidecdtc-202/internal-image:v2.${env.BUILD_ID} --record"
+                echo "gcr.io/roidecdtc-202/internal-image-jenkins:2.${env.BUILD_ID}"
+                sh "kubectl set image deployment/events-internal-deployment events-internal=gcr.io/roidecdtc-202/internal-image-jenkins:v2.${env.BUILD_ID} -n events --record"
             }
         }        
                
